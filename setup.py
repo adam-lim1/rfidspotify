@@ -1,22 +1,25 @@
 #!/usr/bin/env python
 import os
+import sys
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-def authenticate():
+def authenticate(client_id, client_secret):
     """
     Authenticate w/ oauth2 protocol. 
     Requires user interaction to get redirect URL
     """
-    CLIENT_ID = os.getenv('CLIENT_ID')
-    CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
-    auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
-                                client_secret=CLIENT_SECRET,
+    try:
+        auth_manager=SpotifyOAuth(client_id=client_id,
+                                client_secret=client_secret,
                                 redirect_uri="http://localhost:8080",
-                                scope="user-read-playback-state,user-modify-playback-state",
-                                open_browser=False)
+                                scope="user-read-playback-state,user-modify-playback-state")
+    except spotipy.oauth2.SpotifyOauthError:
+        print('abort: Need to source config variables')
+        sys.exit()
+        # ToDo - publish message to AWS SNS topic
 
     sp = spotipy.Spotify(auth_manager=auth_manager)
 
@@ -24,4 +27,6 @@ def authenticate():
     return
 
 if __name__ == '__main__':
-    authenticate()
+    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+    authenticate(CLIENT_ID, CLIENT_SECRET)
