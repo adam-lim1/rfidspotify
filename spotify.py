@@ -55,7 +55,7 @@ def play(sp, device_id, uri, playback_type):
 
 if __name__ == '__main__':
     
-    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_ID = os.environ.get('CLIENT_ID')
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
     DEVICE_ID = os.environ.get('DEVICE_ID')
 

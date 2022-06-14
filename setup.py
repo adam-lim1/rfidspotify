@@ -27,6 +27,6 @@ def authenticate(client_id, client_secret):
     return
 
 if __name__ == '__main__':
-    CLIENT_ID = os.getenv('CLIENT_ID')
+    CLIENT_ID = os.environ.get('CLIENT_ID')
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
     authenticate(CLIENT_ID, CLIENT_SECRET)
