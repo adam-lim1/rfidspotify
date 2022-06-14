@@ -26,6 +26,13 @@ def validate_auth(client_id, client_secret):
     sp = spotipy.Spotify(auth_manager=auth_manager)
     return sp
 
+def get_device_id(sp, device_name):
+    devices = sp.devices()['devices']
+    for d in devices:
+        if d['name'] == device_name:
+            return d['id']
+    raise KeyError("Expected device name not present in user's Spotify connected devices")
+
 
 def play(sp, device_id, uri, playback_type):
     """
