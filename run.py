@@ -6,7 +6,7 @@ import time
 from mfrc522 import SimpleMFRC522
 import RPi.GPIO as GPIO
 
-from rfid import scan_rfid
+from rfid import scan_rfid, scan_rfid_no_block
 from spotify import validate_auth, get_device_id, play
 
 def parse_device_name():
@@ -46,6 +46,8 @@ if __name__ == '__main__':
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
     URI_FILE = os.environ.get('URI_FILE')
 
+    # ToDo - error handle. If any above are null, break
+
     uri_lookup = create_uri_lookup(URI_FILE)
     
     # Initialize Spotify
@@ -55,13 +57,28 @@ if __name__ == '__main__':
 
     # Infinite loop for reading RFID input
     reader = SimpleMFRC522()
+    last_id = None
     try:
         while True:
-            id = str(scan_rfid(reader))
-            play(sp=sp, device_id=device_id, uri=uri_lookup[id]['uri'], playback_type=uri_lookup[id]['asset_type'])
-            time.sleep(1)
+            # Read RFID, returning None if no card present
+            id = scan_rfid_no_block(reader)
+            print(f'Scanned ID: {id}')
+
+            if id == last_id: # If same ID as last read, do nothing
+                continue
+            elif id is None: # If no ID, do nothing
+                last_id = None
+                continue
+            else: # If new ID, start playback
+                last_id = id
+                play(sp=sp, 
+                    device_id=device_id,
+                    uri=uri_lookup[str(id)]['uri'],
+                    playback_type=uri_lookup[str(id)]['asset_type'])
+            time.sleep(2)
     
     # Stop on Ctrl+C and clean up
+    # Should make this broader except for all error handling?
     except KeyboardInterrupt:
         GPIO.cleanup()
     
