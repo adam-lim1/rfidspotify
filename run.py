@@ -1,4 +1,5 @@
 import argparse
+import csv
 import os
 import time
 
@@ -25,10 +26,27 @@ def parse_device_name():
     
     return device_name
 
+def create_uri_lookup(file_name):
+    """
+    Convert CSV of format rfid, uri, asset_type to dictionary
+    of format {rfid: {'uri': uri, 'asset_type': asset_type}}
+    """
+    with open(file_name) as csvfile:
+        reader = csv.reader(csvfile)
+        uri_lookup = {}
+        for row in reader:
+            rfid_key, uri, asset_type = [x.strip() for x in row]
+            uri_lookup[rfid_key] = {'uri': uri, 'asset_type': asset_type}
+    return uri_lookup
+        
+
 if __name__ == '__main__':
     
     CLIENT_ID = os.environ.get('CLIENT_ID')
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+    URI_FILE = os.environ.get('URI_FILE')
+
+    uri_lookup = create_uri_lookup(URI_FILE)
     
     # Initialize Spotify
     device_name = parse_device_name()    
@@ -39,11 +57,11 @@ if __name__ == '__main__':
     reader = SimpleMFRC522()
     try:
         while True:
-            id = scan_rfid(reader)
-            # ToDo - Translate id to URI
-            play(sp=sp, device_id=device_id, uri='09ulWjNT2O3rlYJCDZESBW', playback_type='track')
+            id = str(scan_rfid(reader))
+            play(sp=sp, device_id=device_id, uri=uri_lookup[id]['uri'], playback_type=uri_lookup[id]['asset_type'])
             time.sleep(1)
     
     # Stop on Ctrl+C and clean up
     except KeyboardInterrupt:
         GPIO.cleanup()
+    
