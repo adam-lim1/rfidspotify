@@ -47,7 +47,10 @@ if __name__ == '__main__':
     URI_FILE = os.environ.get('URI_FILE')
 
     # ToDo - error handle. If any above are null, break
+    if any(x is None for x in [CLIENT_ID, CLIENT_SECRET, URI_FILE]):
+        raise ValueError('Necessary environment variables not found')
 
+    # Read RFID <-> URI mapping as dict
     uri_lookup = create_uri_lookup(URI_FILE)
     
     # Initialize Spotify
