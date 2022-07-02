@@ -1,5 +1,7 @@
 .cache
 .DS_Store
+.vscode
 __pycache__
 
 config.txt
+img/
