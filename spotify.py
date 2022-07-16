@@ -6,6 +6,12 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 def validate_auth(client_id, client_secret):
+    """
+    Checks if device is authenticated for Spotify API.
+    If .cache exists (i.e. authenticated), create and return
+    Spotify OAuth object.
+    client_id and client_secret provided by Spotify developer platform.
+    """
     # Check if .cache path exists
     if not os.path.exists('.cache'):
         print('abort: Need to authenticate')
@@ -16,8 +22,8 @@ def validate_auth(client_id, client_secret):
     try:
         auth_manager=SpotifyOAuth(client_id=client_id,
                                 client_secret=client_secret,
-                                redirect_uri="http://localhost:8080",
-                                scope="user-read-playback-state,user-modify-playback-state")
+                                redirect_uri='http://localhost:8080',
+                                scope='user-read-playback-state,user-modify-playback-state')
     except spotipy.oauth2.SpotifyOauthError:
         print('abort: Client ID and Client Secret not recognized')
         sys.exit()
@@ -27,6 +33,9 @@ def validate_auth(client_id, client_secret):
     return sp
 
 def get_device_id(sp, device_name):
+    """
+    Given name of Spotify connected device, return device ID
+    """
     devices = sp.devices()['devices']
     for d in devices:
         if d['name'] == device_name:
@@ -36,6 +45,7 @@ def get_device_id(sp, device_name):
 
 def play(sp, device_id, uri, playback_type):
     """
+    Given authenticated Spotify OAuth object play specified URI on target device.
     Reference: https://talaexe.com/moderndayrecordplayer
     """
     # Specify device for playback
@@ -61,6 +71,4 @@ if __name__ == '__main__':
 
     sp = validate_auth(CLIENT_ID, CLIENT_SECRET)
     play(sp=sp, device_id=DEVICE_ID, uri='09ulWjNT2O3rlYJCDZESBW', playback_type='track')
-    # play(uri='37i9dQZF1DWVFzWmxRnRJH', playback_type='playlist')
-    # play(uri='08XFx1OZMZnRCh0JrKTIgT', playback_type='album')
     

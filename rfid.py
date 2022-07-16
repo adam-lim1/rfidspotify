@@ -1,12 +1,13 @@
+import time
+
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
-import time
 
 def scan_rfid(reader=SimpleMFRC522()):
     """
     Using SimpleMFRC522, read input from Raspberry Pi.
     Waits for RFID input to be provided.
-    https://github.com/pimylifeup/MFRC522-python
+    Reference: https://github.com/pimylifeup/MFRC522-python
     """
     try:
         id = reader.read()[0]
@@ -18,7 +19,7 @@ def scan_rfid(reader=SimpleMFRC522()):
 
 def scan_rfid_no_block(reader=SimpleMFRC522()):
     """
-    Modification to SimpleMFRC522 read_id_no_block.
+    Modification to SimpleMFRC522. Checks for RFID input and immediately returns,
     Returns None if no RFID card provided.
     Attempts to read twice due to issue: https://github.com/pimylifeup/MFRC522-python/issues/15
     """

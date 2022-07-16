@@ -7,17 +7,17 @@ from spotipy.oauth2 import SpotifyOAuth
 
 def authenticate(client_id, client_secret):
     """
-    Authenticate w/ oauth2 protocol. 
-    Requires user interaction to get redirect URL
+    Authenticate Spotify API w/ OAuth2 protocol. 
+    Requires user interaction to get redirect URL (must be run manually)
     """
 
     try:
         auth_manager=SpotifyOAuth(client_id=client_id,
                                 client_secret=client_secret,
-                                redirect_uri="http://localhost:8080",
-                                scope="user-read-playback-state,user-modify-playback-state")
+                                redirect_uri='http://localhost:8080',
+                                scope='user-read-playback-state,user-modify-playback-state')
     except spotipy.oauth2.SpotifyOauthError:
-        print('abort: Need to source config variables')
+        print('Abort: Need to source config variables')
         sys.exit()
         # ToDo - publish message to AWS SNS topic
 

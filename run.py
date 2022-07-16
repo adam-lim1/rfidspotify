@@ -6,7 +6,7 @@ import time
 from mfrc522 import SimpleMFRC522
 import RPi.GPIO as GPIO
 
-from rfid import scan_rfid, scan_rfid_no_block
+from rfid import scan_rfid_no_block
 from spotify import validate_auth, get_device_id, play
 
 def parse_device_name():
@@ -16,7 +16,7 @@ def parse_device_name():
     desired device name from environment variable
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--device", help="Name of Spotify device to play on")
+    parser.add_argument('-d', '--device', help='Name of Spotify device to play on')
     args = parser.parse_args()
 
     if args.device:
@@ -42,11 +42,12 @@ def create_uri_lookup(file_name):
 
 if __name__ == '__main__':
     
+    # Source from environment variables
     CLIENT_ID = os.environ.get('CLIENT_ID')
     CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
     URI_FILE = os.environ.get('URI_FILE')
 
-    # ToDo - error handle. If any above are null, break
+    # Error handle. If any above are null, break
     if any(x is None for x in [CLIENT_ID, CLIENT_SECRET, URI_FILE]):
         raise ValueError('Necessary environment variables not found')
 
@@ -81,7 +82,6 @@ if __name__ == '__main__':
             time.sleep(2)
     
     # Stop on Ctrl+C and clean up
-    # Should make this broader except for all error handling?
-    except KeyboardInterrupt:
+    except:
         GPIO.cleanup()
     
