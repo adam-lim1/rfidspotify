@@ -15,7 +15,8 @@ def authenticate(client_id, client_secret):
         auth_manager=SpotifyOAuth(client_id=client_id,
                                 client_secret=client_secret,
                                 redirect_uri='http://localhost:8080',
-                                scope='user-read-playback-state,user-modify-playback-state')
+                                scope='user-read-playback-state,user-modify-playback-state',
+                                open_browser=False)
     except spotipy.oauth2.SpotifyOauthError:
         print('Abort: Need to source config variables')
         sys.exit()
