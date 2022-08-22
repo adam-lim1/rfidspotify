@@ -31,8 +31,10 @@ def create_uri_lookup(file_name):
     Convert CSV of format rfid, uri, asset_type to dictionary
     of format {rfid: {'uri': uri, 'asset_type': asset_type}}
     """
+    # ToDo - error handle if not correct format
     with open(file_name) as csvfile:
         reader = csv.reader(csvfile)
+        _ = next(reader, None) # Skip header of file
         uri_lookup = {}
         for row in reader:
             rfid_key, uri, asset_type = [x.strip() for x in row]
@@ -69,16 +71,21 @@ if __name__ == '__main__':
             print(f'Scanned ID: {id}')
 
             if id == last_id: # If same ID as last read, do nothing
+                # ToDo - throttle scan rate if same?
+                time.sleep(3)
                 continue
             elif id is None: # If no ID, do nothing
                 last_id = None
                 continue
             else: # If new ID, start playback
                 last_id = id
+                spotify_data = uri_lookup.get(str(id))
+                if spotify_data is None:
+                    raise KeyError(f'Spotify data not found for RFID key: {id}')
                 play(sp=sp, 
                     device_id=device_id,
-                    uri=uri_lookup[str(id)]['uri'],
-                    playback_type=uri_lookup[str(id)]['asset_type'])
+                    uri=spotify_data['uri'],
+                    playback_type=spotify_data['asset_type'])
             time.sleep(2)
     
     # Stop on Ctrl+C and clean up
