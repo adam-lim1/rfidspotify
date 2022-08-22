@@ -30,6 +30,14 @@ python run.py [-d device]
 ```
 - `-d` or `--device` is an optional flag that specifies which Spotify Connect device to start playback on. Default is `DEVICE_NAME` environment variable
 
+**First Time Spotify Authentication**
+```python
+cd ~/Documents/rfidspotify/
+source rfidspotify/bin/activate
+source config.txt
+python setup.py
+```
+
 **Configuring to Run Automatically at Raspberry Pi Startup**
 ```bash
 cd ~
