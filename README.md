@@ -45,6 +45,9 @@ echo "cd /home/pi/Documents/rfidspotify" >> .bashrc
 echo "sudo ./boot.sh" >> .bashrc
 ```
 
+## Demo
+- https://www.instagram.com/reel/CjgTV4zgvazwF_MA47bTSNnm0bCdjOWVYGKDx80/?igshid=N2Q2MGM2OGQ=
+
 ## Extra
 **Get Spotify Album Art**
 ```python
